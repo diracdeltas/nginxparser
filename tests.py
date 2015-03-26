@@ -87,20 +87,22 @@ class TestNginxParser(unittest.TestCase):
         parsed = load(open("/etc/nginx/sites-enabled/foo.conf"))
         self.assertEqual(
             parsed,
-            [['user', 'www-data']],
-            [['server'], [
-                ['listen', '80'],
-                ['server_name', 'foo.com'],
-                ['root', '/home/ubuntu/sites/foo/'],
-                [['location', '/status'], [
-                    ['check_status'],
-                    [['types'], [['image/jpeg', 'jpg']]],
-                ]],
-                [['location', '~', 'case_sensitive\.php$']],
-                [['location', '~*', 'case_insensitive\.php$']],
-                [['location', '=', 'exact_match\.php$']],
-                [['location', '^~', 'ignore_regex\.php$']],
-            ]],
+            [['user', 'www-data'],
+             [['server'], [
+                 ['listen', '80'],
+                 ['server_name', 'foo.com'],
+                 ['root', '/home/ubuntu/sites/foo/'],
+                 [['location', '/status'], [
+                     ['check_status'],
+                     [['types'], [['image/jpeg', 'jpg']]],
+                 ]],
+                 [['location', '~', 'case_sensitive\.php$'], [
+                     ['hoge', 'hoge']
+                 ]],
+                 [['location', '~*', 'case_insensitive\.php$'], []],
+                 [['location', '=', 'exact_match\.php$'], []],
+                 [['location', '^~', 'ignore_regex\.php$'], []],
+             ]]]
         )
 
 

@@ -1,8 +1,6 @@
 import operator
 import unittest
 
-from mockio import mockio
-
 from nginxparser import NginxParser, load,  dumps
 
 
@@ -10,30 +8,6 @@ first = operator.itemgetter(0)
 
 
 class TestNginxParser(unittest.TestCase):
-    files = {
-        "/etc/nginx/sites-enabled/foo.conf": '''
-        user www-data;
-        server {
-            listen   80;
-            server_name foo.com;
-            root /home/ubuntu/sites/foo/;
-
-            location /status {
-                check_status;
-                types {
-                    image/jpeg jpg;
-                }
-            }
-
-            location ~ case_sensitive\.php$ {
-                hoge hoge;
-            }
-            location ~* case_insensitive\.php$ {}
-            location = exact_match\.php$ {}
-            location ^~ ignore_regex\.php$ {}
-
-        }'''
-    }
 
     def test_assignments(self):
         parsed = NginxParser.assignment.parseString('root /test;').asList()
@@ -82,9 +56,8 @@ class TestNginxParser(unittest.TestCase):
                          '    }\n' +
                          '}')
 
-    @mockio(files)
     def test_parse_from_file(self):
-        parsed = load(open("/etc/nginx/sites-enabled/foo.conf"))
+        parsed = load(open("data/foo.conf"))
         self.assertEqual(
             parsed,
             [['user', 'www-data'],

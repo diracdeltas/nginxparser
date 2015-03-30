@@ -87,12 +87,6 @@ class NginxDumper(object):
     def as_string(self):
         return '\n'.join(self)
 
-    def to_file(self, out):
-        for line in self:
-            out.write(line)
-        out.close()
-        return out
-
 
 # Shortcut functions to respect Python's serialization interface
 # (like pyyaml, picker or json)
@@ -110,4 +104,6 @@ def dumps(blocks, indentation=4):
 
 
 def dump(blocks, _file, indentation=4):
-    return NginxDumper(blocks, indentation).to_file(_file)
+    _file.write(dumps(blocks, indentation))
+    _file.close()
+    return _file

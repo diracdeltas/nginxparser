@@ -1,7 +1,7 @@
 import operator
 import unittest
 
-from nginxparser import NginxParser, load,  dumps
+from nginxparser import NginxParser, load, dumps, dump
 
 
 first = operator.itemgetter(0)
@@ -57,7 +57,7 @@ class TestNginxParser(unittest.TestCase):
                          '}')
 
     def test_parse_from_file(self):
-        parsed = load(open("data/foo.conf"))
+        parsed = load(open('data/foo.conf'))
         self.assertEqual(
             parsed,
             [['user', 'www-data'],
@@ -77,6 +77,24 @@ class TestNginxParser(unittest.TestCase):
                  [['location', '^~', 'ignore_regex\.php$'], []],
              ]]]
         )
+
+    def test_dump_as_file(self):
+        parsed = load(open('data/nginx.conf'))
+        parsed[-1][-1].append([['server'],
+                               [['listen', '443 ssl'],
+                                ['server_name', 'localhost'],
+                                ['ssl_certificate', 'cert.pem'],
+                                ['ssl_certificate_key', 'cert.key'],
+                                ['ssl_session_cache', 'shared:SSL:1m'],
+                                ['ssl_session_timeout', '5m'],
+                                ['ssl_ciphers', 'HIGH:!aNULL:!MD5'],
+                                [['location', '/'],
+                                 [['root', 'html'],
+                                  ['index', 'index.html index.htm']]]]])
+        f = open('data/nginx.new.conf', 'w')
+        dump(parsed, f)
+        parsed_new = load(open('data/nginx.new.conf'))
+        self.assertEquals(parsed, parsed_new)
 
 
 if __name__ == '__main__':
